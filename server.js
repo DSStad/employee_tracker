@@ -15,6 +15,15 @@ const db = mysql.createConnection(
   console.log(`Connected to the classlist_db database.`)
 );
 
+const mainActions = [
+    {
+        type: "list",
+        name: "action",
+        message: "What would you like to do?",
+        choices: ["View All Departments", "View All Roles", "View All Employees","Add A Department", "Add A Role", "Add An Employee", "Update An Employee Role"]
+    }
+]
+
 const query = util.promisify(db.query).bind(db);
 
 const viewDepartments = async () => {
