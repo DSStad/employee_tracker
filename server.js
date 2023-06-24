@@ -51,7 +51,7 @@ const takeAction = (action) => {
       viewRoles();
       break;
     case "View All Employees":
-      // viewEmployees();
+      viewEmployees();
       break;
     default:
       console.log("Sorry we couldnt process your request");
@@ -62,11 +62,23 @@ const viewDepartments = async () => {
   const response = await query("SELECT * FROM department");
 
   console.table(response);
+  await handleActions();
 };
 
 const viewRoles = async () => {
   const response = await query("SELECT * FROM role");
 
   console.table(response);
+  await handleActions();
 };
-// view roles, employees functions
+
+const viewEmployees = async () => {
+  const response = await query("SELECT * FROM employee");
+
+  console.table(response);
+  await handleActions();
+};
+// view employee function next
+
+// functions thatll handle the add on tables -- with embedded inquirer
+// functions thatll handle the updating tables -- with emdedded inquirer
