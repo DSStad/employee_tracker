@@ -53,32 +53,50 @@ const takeAction = (action) => {
     case "View All Employees":
       viewEmployees();
       break;
+    case "Add A Department":
+      addDepartment();
+      break;
     default:
       console.log("Sorry we couldnt process your request");
   }
 };
 
 const viewDepartments = async () => {
-  const response = await query("SELECT * FROM department");
+  const response = await query("SELECT id, name FROM departments");
 
   console.table(response);
   await handleActions();
 };
 
 const viewRoles = async () => {
-  const response = await query("SELECT * FROM role");
+  const response = await query(
+    "SELECT roles.id, title, salary, name AS department FROM ROLES JOIN departments ON department_id = departments.id"
+  );
 
   console.table(response);
   await handleActions();
 };
 
 const viewEmployees = async () => {
-  const response = await query("SELECT * FROM employee");
+  const response = await query(
+    "SELECT e.id, e.first_name, e.last_name, title, salary, name AS department, IFNULL(CONCAT(m.first_name, ' ', m.last_name), 'N/A') AS manager FROM employees e JOIN roles ON role_id = roles.id INNER JOIN departments ON department_id = departments.id LEFT JOIN employees m ON m.id = e.manager_id"
+  );
 
   console.table(response);
   await handleActions();
 };
-// view employee function next
 
 // functions thatll handle the add on tables -- with embedded inquirer
+const addDepartment = async () => {
+  const departPrompt = [
+    {
+      type: "input",
+      name: "department",
+      message: "What Department would you like to add?"
+    },
+  ]
+
+  const addDepart = await inquirer.prompt(departPrompt);
+  const 
+};
 // functions thatll handle the updating tables -- with emdedded inquirer

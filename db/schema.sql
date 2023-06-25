@@ -3,13 +3,13 @@ CREATE DATABASE employee_db;
 
 USE employee_db;
 
-CREATE TABLE department (
+CREATE TABLE departments (
     id INT AUTO_INCREMENT NOT NULL,
     name VARCHAR(30) NOT NULL,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE role (
+CREATE TABLE roles (
     id INT AUTO_INCREMENT NOT NULL,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE role (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE employee (
+CREATE TABLE employees (
     id INT AUTO_INCREMENT NOT NULL,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
@@ -26,12 +26,12 @@ CREATE TABLE employee (
     PRIMARY KEY (id)
 );
 
-ALTER TABLE role ADD CONSTRAINT fk_role_department_id
+ALTER TABLE roles ADD CONSTRAINT fk_roles_department_id
 FOREIGN KEY(department_id)
-REFERENCES department (id);
+REFERENCES departments (id);
 
-ALTER TABLE employee ADD CONSTRAINT fk_employee_role_id FOREIGN KEY(role_id)
-REFERENCES role (id);
+ALTER TABLE employees ADD CONSTRAINT fk_employees_role_id FOREIGN KEY(role_id)
+REFERENCES roles (id);
 
-ALTER TABLE employee ADD CONSTRAINT fk_employee_manager_id FOREIGN KEY(manager_id)
-REFERENCES employee (id);
+ALTER TABLE employees ADD CONSTRAINT fk_employees_manager_id FOREIGN KEY(manager_id)
+REFERENCES employees (id);
