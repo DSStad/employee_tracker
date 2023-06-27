@@ -62,7 +62,9 @@ const takeAction = (action) => {
       break;
     case "Add An Employee":
       addEmployee();
-      // getRoles();
+      break;
+    case "Update An Employee Role":
+      updateEmploy();
       break;
     default:
       console.log("Sorry we couldnt process your request");
@@ -116,15 +118,9 @@ const addDepartment = async () => {
 };
 
 const addRole = async () => {
-  const departArr = [];
-  const departList = await query("SELECT name FROM departments");
-  console.log(departList);
-  for (let department of departList) {
-    for (let name in department) {
-      departArr.push(`${department[name]}`);
-    }
-  }
-  console.log(departArr);
+  const departList = await query("SELECT name, id AS value FROM departments");
+  // console.log(departList);
+
   const rolePrompt = [
     {
       type: "input",
@@ -140,40 +136,24 @@ const addRole = async () => {
       type: "list",
       name: "department",
       message: "What department does the role fall under?",
-      choices: departArr,
+      choices: departList,
     },
   ];
   const addRole = await inquirer.prompt(rolePrompt);
 
   const insertRole = await query(
-    `INSERT INTO roles (title, salary, department_id) VALUES (${addRole.role}, ${addRole.salary}, SELECT departments.id FROM departments WHERE name = "${addRole.department}")`
+    `INSERT INTO roles (title, salary, department_id) VALUES ("${addRole.role}", ${addRole.salary}, ${addRole.department})`
   );
   console.log(`Added ${addRole.role} role to the Database.`);
   await handleActions();
 };
 
 const addEmployee = async () => {
-  const rolesArr = [];
-  const rolesList = await query("SELECT roles.title FROM roles");
-  // console.log(rolesList);
-  for (let roles of rolesList) {
-    for (let title in roles) {
-      // console.log(`${roles[title]}`);
-      rolesArr.push(`${roles[title]}`);
-    }
-    // console.log(rolesArr);
-  }
-  const manageArr = [];
+  const rolesList = await query("SELECT title AS name, id AS value FROM roles");
+
   const manageList = await query(
-    "SELECT CONCAT(first_name, ' ', last_name) AS employee FROM employees"
+    "SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employees"
   );
-  console.log(manageList);
-  for (let managers of manageList) {
-    for (let name in managers) {
-      manageArr.push(`${managers[name]}`);
-    }
-  }
-  console.log(manageArr);
 
   const employeePrompt = [
     {
@@ -190,23 +170,19 @@ const addEmployee = async () => {
       type: "list",
       name: "role",
       message: "What is the new employees role?",
-      choices: rolesArr,
+      choices: rolesList,
     },
     {
       type: "list",
       name: "manager",
       message: "Who is the new employees manager?",
-      choices: manageArr,
+      choices: ["none", manageList],
     },
   ];
   const addEmploy = await inquirer.prompt(employeePrompt);
-  console.log(addEmploy.manager.split(" "));
-  const fullName = addEmploy.manager.split(" ");
-  const firstName = fullName[0];
-  const lastName = fullName[1];
-  console.log(firstName, lastName);
+
   const insertEmploy = await query(`
-  INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (${addEmploy.first}, ${addEmploy.last}, SELECT roles.id FROM roles WHERE title = "${addEmploy.role}", SELECT employees.id FROM employees WHERE first_name = "${firstName}" AND last_name = "${lastName}")
+  INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${addEmploy.first}", "${addEmploy.last}", ${addEmploy.role}, ${addEmploy.manager})
   `);
 
   console.log(
@@ -214,4 +190,32 @@ const addEmployee = async () => {
   );
   await handleActions();
 };
-// functions thatll handle the updating tables -- with emdedded inquirer
+
+const updateEmploy = async () => {
+  const employList = await query(
+    "SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employees"
+  );
+  console.log(employList);
+  const rolesList = await query("SELECT title AS name, id AS value FROM roles");
+  console.log(rolesList);
+  const updatePrompt = [
+    {
+      type: "list",
+      name: "employee",
+      message: "Which employee's role would you like to update?",
+      choices: employList,
+    },
+    {
+      type: "list",
+      name: "role",
+      message: "What role would you like to assign the selected employee?",
+      choices: rolesList,
+    },
+  ];
+  const updatedEmp = await inquirer.prompt(updatePrompt);
+  const insertUpdate = await query(`
+  UPDATE employees SET role_id = ${updatedEmp.role} WHERE employees.id = ${updatedEmp.employee}
+  `);
+
+  await handleActions();
+};

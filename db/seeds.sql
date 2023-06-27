@@ -14,4 +14,3 @@ VALUES ('Ben', 'Machock', 1, null),
         ('Derick', 'Stadler', 3, 1);
 
 
--- FAKE DATA INSERT
