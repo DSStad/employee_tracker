@@ -176,7 +176,7 @@ const addEmployee = async () => {
       type: "list",
       name: "manager",
       message: "Who is the new employees manager?",
-      choices: ["none", manageList],
+      choices: ["none", ...manageList],
     },
   ];
   const addEmploy = await inquirer.prompt(employeePrompt);
