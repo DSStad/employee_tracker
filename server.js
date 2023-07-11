@@ -155,6 +155,8 @@ const addEmployee = async () => {
     "SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employees"
   );
 
+  // manageList.push('none');
+
   const employeePrompt = [
     {
       type: "input",
@@ -176,7 +178,7 @@ const addEmployee = async () => {
       type: "list",
       name: "manager",
       message: "Who is the new employees manager?",
-      choices: ["none", ...manageList],
+      choices: [{key: 'none', value: 'null',}, ...manageList],
     },
   ];
   const addEmploy = await inquirer.prompt(employeePrompt);
